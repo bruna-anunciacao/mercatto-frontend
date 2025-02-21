@@ -12,6 +12,8 @@ import { Button } from "@mui/material";
 import { Dropdown } from "primereact/dropdown";
 import Link from "next/link";
 import { StateEnums } from "@/helpers/enums";	
+import { useEffect, useState } from "react";
+import { getAddressCorreios } from "./api/route";
 // Styles
 import s from "./stepTwo.module.scss";
 
@@ -21,6 +23,7 @@ type StepTwoProps = {
 };
 
 export default function StepTwo({ step, setData }: StepTwoProps) {
+  const [isLoading, setIsLoading] = useState(false);
   const validationSchema = yup.object({
     zipcode: yup
       .string()
@@ -57,6 +60,26 @@ export default function StepTwo({ step, setData }: StepTwoProps) {
       setData(data);
     },
   });
+
+  useEffect(() => {
+    if (/^\d{5}-\d{3}$/.test(formik.values.zipcode)) {
+      const getAddressCorreiosData = async () => {
+        const data = {
+          zipcode: formik.values.zipcode.replace(/\D/g, ""),
+        }
+        const response = await getAddressCorreios(data.zipcode, setIsLoading);
+        if (!response) {
+          return;
+        }
+        formik.setFieldValue("city", response.localidade);
+        formik.setFieldValue("state", response.uf);
+        formik.setFieldValue("neighborhood", response.bairro);
+        formik.setFieldValue("thoroughfare",  response.logradouro);
+        formik.setFieldValue("additionalDetails", response.complemento);
+      }
+      getAddressCorreiosData();
+    }
+  }, [formik.values.zipcode]);
 
   const handleBack = () => {
     step(0);

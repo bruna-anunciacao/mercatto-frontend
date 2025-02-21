@@ -29,7 +29,7 @@ export default function Page() {
         router.push("/login");
       }, 2000);
     }
-  }, [secondData])
+  }, [secondData]);
 
   return (
     <section className={s.wrapperRegister}>
