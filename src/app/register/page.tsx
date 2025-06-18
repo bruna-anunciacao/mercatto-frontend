@@ -14,7 +14,7 @@ import toast from "react-hot-toast";
 // Styles
 import s from "./page.module.scss";
 
-export default function Page() {
+export default function Register() {
   const [stepForm, setStepForm] = useState(0);
   const [firstData, setFirstData] = useState<RegisterStepOne>({} as RegisterStepOne);
   const [secondData, setSecondData] = useState<RegisterStepTwo>({} as RegisterStepTwo);
